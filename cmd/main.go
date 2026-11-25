@@ -12,8 +12,8 @@ func Home(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	http.HandleFunc("/", Home)
-
-	err := http.ListenAndServe("8000", nil)
+	log.Print("server started on 8000")
+	err := http.ListenAndServe(":8000", nil)
 	if err != nil {
 		log.Fatal(err)
 	}
