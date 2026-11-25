@@ -5,6 +5,12 @@ import (
 	"time"
 )
 
+type Metrics struct {
+	Capacity float64
+	Rate     float64
+	Tokens   float64
+}
+
 type TokenBucket struct {
 	capacity   float64
 	rate       float64
@@ -47,16 +53,18 @@ func (tb *TokenBucket) TakeWithBurstLimit(tokens float64, maxBurst float64) bool
 	return tb.Take(tokens)
 }
 
-func (tb *TokenBucket) Metrics() (float64, float64, float64, time.Time) { // the return signature should be better
+func (tb *TokenBucket) Metrics() Metrics {
 	tb.mu.Lock()
 	defer tb.mu.Unlock()
 
 	tb.refillLocked()
 
-	return tb.capacity, tb.rate, tb.tokens, tb.lastRefill
-
+	return Metrics{
+		Capacity: tb.capacity,
+		Rate:     tb.rate,
+		Tokens:   tb.tokens,
+	}
 }
-
 func (tb *TokenBucket) Take(tokens float64) bool {
 	if tokens < 0 || tokens > tb.capacity {
 		return false
