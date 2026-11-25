@@ -34,6 +34,15 @@ func NewTokenBucket(rate float64, capacity float64) *TokenBucket {
 	}
 }
 
+func (tb *TokenBucket) SetRate(newRate float64) {
+	tb.mu.Lock()
+	defer tb.mu.Unlock()
+
+	tb.refillLocked()
+
+	tb.rate = newRate
+}
+
 func (tb *TokenBucket) refillLocked() {
 	now := time.Now()
 	elapsed := now.Sub(tb.lastRefill)
