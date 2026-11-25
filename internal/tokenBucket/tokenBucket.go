@@ -47,6 +47,16 @@ func (tb *TokenBucket) TakeWithBurstLimit(tokens float64, maxBurst float64) bool
 	return tb.Take(tokens)
 }
 
+func (tb *TokenBucket) Metrics() (float64, float64, float64, time.Time) { // the return signature should be better
+	tb.mu.Lock()
+	defer tb.mu.Unlock()
+
+	tb.refillLocked()
+
+	return tb.capacity, tb.rate, tb.tokens, tb.lastRefill
+
+}
+
 func (tb *TokenBucket) Take(tokens float64) bool {
 	if tokens < 0 || tokens > tb.capacity {
 		return false
