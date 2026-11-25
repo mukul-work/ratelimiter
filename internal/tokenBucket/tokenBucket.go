@@ -12,3 +12,10 @@ type tokenBucket struct {
 	mu         sync.Mutex
 	lastRefill time.Duration
 }
+
+func NewTokenBucket(rate int, cap int) *tokenBucket {
+	return &tokenBucket{
+		cap:  cap,
+		rate: rate,
+	}
+}
