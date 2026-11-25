@@ -40,6 +40,13 @@ func (tb *TokenBucket) refillLocked() {
 	}
 }
 
+func (tb *TokenBucket) TakeWithBurstLimit(tokens float64, maxBurst float64) bool {
+	if tb.tokens > maxBurst {
+		tokens = maxBurst
+	}
+	return tb.Take(tokens)
+}
+
 func (tb *TokenBucket) Take(tokens float64) bool {
 	if tokens < 0 || tokens > tb.capacity {
 		return false
